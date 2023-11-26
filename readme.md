@@ -1,10 +1,18 @@
 # HCMUS - DSTN
 
-Tra cứu thông tin tốt nghiệp, dùng API của HCMUS.
+Graduate information lookup, using official HCMUS API.
 
-https://pdt.hcmus.edu.vn/dstn
+Official HCMUS website: https://pdt.hcmus.edu.vn/dstn
 
-## Cách sử dụng
+## Usage
+
+1. Install required packages.
+
+```
+pip install -r requirements.txt
+```
+
+2. Running `main.py` with required arguments.
 
 ```python
 λ python main.py -h
