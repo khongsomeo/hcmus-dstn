@@ -1,10 +1,11 @@
 import requests as rq
 import termtables as tt
 
+
 class DSTNItem:
     def __init__(self, **kwargs):
         self.__json = kwargs.get("json", None)
-        self.__language = kwargs.get("language", None)
+        self.__language = kwargs.get("language", "vn")
 
         if self.__json is not None:
             self.parse()
@@ -28,7 +29,7 @@ class DSTNItem:
         self.__tenheAnh = self.__json["tenheAnh"]
         self.__tennganh = self.__json["tennganh"]
         self.__tennganhAnh = self.__json["tennganhAnh"]
-        
+
     def get_string(self):
         dstn_string = []
         if self.__language == "vn":
@@ -36,35 +37,36 @@ class DSTNItem:
             dstn_string.append(["Ngày sinh", self.__ngaysinh])
             dstn_string.append(["Họ và tên", self.__hoten])
             dstn_string.append(["Bậc", self.__Bac])
+            dstn_string.append(["Tên bậc", self.__tenbac])
             dstn_string.append(["Mã hệ", self.__mahe])
+            dstn_string.append(["Tên hệ", self.__tenhe])
             dstn_string.append(["Đợt năm", self.__dotnam])
+            dstn_string.append(["Tên ngành", self.__tennganh])
             dstn_string.append(["Loại tốt nghiệp", self.__loaitotnghiep])
             dstn_string.append(["Số bằng", self.__sobang])
             dstn_string.append(["Số vào sổ", self.__sovaoso])
             dstn_string.append(["Ngày quyết định", self.__ngayqd])
-            dstn_string.append(["Tên bậc", self.__tenbac])
-            dstn_string.append(["Tên hệ", self.__tenhe])
-            dstn_string.append(["Tên ngành", self.__tennganh])
-        
+
         if self.__language == "en":
             dstn_string.append(["Student ID", self.__masv])
             dstn_string.append(["Birthday", self.__ngaysinh])
             dstn_string.append(["Name", self.__hotenAnh])
             dstn_string.append(["Type", self.__Bac])
+            dstn_string.append(["Type name", self.__tenbacAnh])
             dstn_string.append(["Type code", self.__mahe])
+            dstn_string.append(["Type code name", self.__tenheAnh])
             dstn_string.append(["Year", self.__dotnam])
+            dstn_string.append(["Major name", self.__tennganhAnh])
             dstn_string.append(["Graduation rank", self.__loaitotnghiepAnh])
             dstn_string.append(["Degree ID", self.__sobang])
             dstn_string.append(["Degree in book ID", self.__sovaoso])
             dstn_string.append(["Issue date", self.__ngayqd])
-            dstn_string.append(["Type name", self.__tenbacAnh])
-            dstn_string.append(["Type code name", self.__tenheAnh])
-            dstn_string.append(["Major name", self.__tennganhAnh])
-            
+
         return tt.to_string(dstn_string, style=tt.styles.ascii_thin_double)
-        
+
     def __str__(self):
         return self.get_string()
+
 
 class DSTNRequest:
     def __init__(self, **kwargs):
@@ -75,7 +77,7 @@ class DSTNRequest:
         self.__student_id = kwargs.get("student_id", None)
         self.__birthday = kwargs.get("birthday", None)
         self.__language = kwargs.get("language", None)
-        
+
         self.__params = {
             "masv": self.__student_id,
             "ngaysinh": self.__birthday,
@@ -93,15 +95,18 @@ class DSTNRequest:
         if response.status_code != 200:
             with open("error.html", "w+") as f:
                 print(response.content, file=f)
-                print(f"Error code: {response.status_code}, logged to error.html")
+                print(
+                    f"Error code: {response.status_code}, logged to error.html")
         else:
             response_json = response.json()
-            
+
             if response_json["total"] == 0:
                 print("No records found. Please check informations again.")
             else:
-                record_list = [DSTNItem(json=record, language=self.__language) for record in response_json["rows"]]
-                
+                record_list = [
+                    DSTNItem(
+                        json=record, language=self.__language)
+                    for record in response_json["rows"]]
+
                 for record in record_list:
                     print(record)
-                
