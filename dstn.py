@@ -1,8 +1,10 @@
 import requests as rq
+import termtables as tt
 
 class DSTNItem:
     def __init__(self, **kwargs):
         self.__json = kwargs.get("json", None)
+        self.__language = kwargs.get("language", None)
 
         if self.__json is not None:
             self.parse()
@@ -27,48 +29,42 @@ class DSTNItem:
         self.__tennganh = self.__json["tennganh"]
         self.__tennganhAnh = self.__json["tennganhAnh"]
         
-    def get_string(self, language="vn"):
+    def get_string(self):
         dstn_string = []
-        if language == "vn":
-            dstn_string.append("==== Tiếng Việt ====\n")
-            dstn_string.append(f"Mã sinh viên: {self.__masv}\n")
-            dstn_string.append(f"Ngày sinh: {self.__ngaysinh}\n")
-            dstn_string.append(f"Họ và tên: {self.__hoten}\n")
-            dstn_string.append(f"Bậc: {self.__Bac}\n")
-            dstn_string.append(f"Mã hệ: {self.__mahe}\n")
-            dstn_string.append(f"Đợt năm: {self.__dotnam}\n")
-            dstn_string.append(f"Loại tốt nghiệp: {self.__loaitotnghiep}\n")
-            dstn_string.append(f"Số bằng: {self.__sobang}\n")
-            dstn_string.append(f"Số vào sổ: {self.__sovaoso}\n")
-            dstn_string.append(f"Ngày quyết định: {self.__ngayqd}\n")
-            dstn_string.append(f"Tên bậc: {self.__tenbac}\n")
-            dstn_string.append(f"Tên hệ: {self.__tenhe}\n")
-            dstn_string.append(f"Tên ngành: {self.__tennganh}\n")
+        if self.__language == "vn":
+            dstn_string.append(["Mã sinh viên",  self.__masv])
+            dstn_string.append(["Ngày sinh", self.__ngaysinh])
+            dstn_string.append(["Họ và tên", self.__hoten])
+            dstn_string.append(["Bậc", self.__Bac])
+            dstn_string.append(["Mã hệ", self.__mahe])
+            dstn_string.append(["Đợt năm", self.__dotnam])
+            dstn_string.append(["Loại tốt nghiệp", self.__loaitotnghiep])
+            dstn_string.append(["Số bằng", self.__sobang])
+            dstn_string.append(["Số vào sổ", self.__sovaoso])
+            dstn_string.append(["Ngày quyết định", self.__ngayqd])
+            dstn_string.append(["Tên bậc", self.__tenbac])
+            dstn_string.append(["Tên hệ", self.__tenhe])
+            dstn_string.append(["Tên ngành", self.__tennganh])
         
-        if language == "en":
-            dstn_string.append("==== English ====\n")
-            dstn_string.append(f"Student ID: {self.__masv}\n")
-            dstn_string.append(f"Birthday: {self.__ngaysinh}\n")
-            dstn_string.append(f"Name: {self.__hoten}\n")
-            dstn_string.append(f"Type: {self.__Bac}\n")
-            dstn_string.append(f"Type code: {self.__mahe}\n")
-            dstn_string.append(f"Year: {self.__dotnam}\n")
-            dstn_string.append(f"Graduation rank: {self.__loaitotnghiep}\n")
-            dstn_string.append(f"Degree ID: {self.__sobang}\n")
-            dstn_string.append(f"Degree in book ID: {self.__sovaoso}\n")
-            dstn_string.append(f"Issue date: {self.__ngayqd}\n")
-            dstn_string.append(f"Type name: {self.__tenbac}\n")
-            dstn_string.append(f"Type code name: {self.__tenhe}\n")
-            dstn_string.append(f"Major name: {self.__tennganh}\n")
+        if self.__language == "en":
+            dstn_string.append(["Student ID", self.__masv])
+            dstn_string.append(["Birthday", self.__ngaysinh])
+            dstn_string.append(["Name", self.__hotenAnh])
+            dstn_string.append(["Type", self.__Bac])
+            dstn_string.append(["Type code", self.__mahe])
+            dstn_string.append(["Year", self.__dotnam])
+            dstn_string.append(["Graduation rank", self.__loaitotnghiepAnh])
+            dstn_string.append(["Degree ID", self.__sobang])
+            dstn_string.append(["Degree in book ID", self.__sovaoso])
+            dstn_string.append(["Issue date", self.__ngayqd])
+            dstn_string.append(["Type name", self.__tenbacAnh])
+            dstn_string.append(["Type code name", self.__tenheAnh])
+            dstn_string.append(["Major name", self.__tennganhAnh])
             
-        return "".join(dstn_string)
+        return tt.to_string(dstn_string, style=tt.styles.ascii_thin_double)
         
     def __str__(self):
-        return "".join([
-            self.get_string(language="vn"),
-            "\n",
-            self.get_string(language="en"),
-        ])
+        return self.get_string()
 
 class DSTNRequest:
     def __init__(self, **kwargs):
@@ -78,6 +74,7 @@ class DSTNRequest:
         self.__sord = kwargs.get("sord", "desc"),
         self.__student_id = kwargs.get("student_id", None)
         self.__birthday = kwargs.get("birthday", None)
+        self.__language = kwargs.get("language", None)
         
         self.__params = {
             "masv": self.__student_id,
@@ -103,7 +100,7 @@ class DSTNRequest:
             if response_json["total"] == 0:
                 print("No records found. Please check informations again.")
             else:
-                record_list = [DSTNItem(json=record) for record in response_json["rows"]]
+                record_list = [DSTNItem(json=record, language=self.__language) for record in response_json["rows"]]
                 
                 for record in record_list:
                     print(record)

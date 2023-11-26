@@ -16,15 +16,15 @@ pip install -r requirements.txt
 
 ```python
 λ python main.py -h
-usage: main.py [-h] [--config CONFIG] [--student_id STUDENT_ID]
-               [--birthday BIRTHDAY]
+usage: main.py [-h] [--config CONFIG] [--student_id STUDENT_ID] [--birthday BIRTHDAY] [--language LANGUAGE]
 
 optional arguments:
   -h, --help            show this help message and exit
   --config CONFIG       Config file (config.json)
   --student_id STUDENT_ID
                         Student ID
-  --birthday BIRTHDAY   Student birthday (dd/MM/YYY) 
+  --birthday BIRTHDAY   Student birthday (dd/MM/YYY)
+  --language LANGUAGE   Language (en/vn)
 ```
 
 ## LICENSE
