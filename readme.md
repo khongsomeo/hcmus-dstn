@@ -27,6 +27,19 @@ optional arguments:
   --language LANGUAGE   Language (en/vn)
 ```
 
+## Configurations
+
+Configurations can be found in `config.json`:
+
+```json
+{
+    "api_url": "https://example.com/dstn/api", // Official school API
+    "rows": 10,                                // Max of results per row
+    "page": 1,                                 // Show results per page.
+    "sord": "desc"                             // Sorting order
+}
+```
+
 ## LICENSE
 
 This project is licensed under [THE GNU GPL v3](LICENSE)
