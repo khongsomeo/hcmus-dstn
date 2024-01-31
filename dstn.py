@@ -14,21 +14,21 @@ class DSTNItem:
         self.__masv = self.__json["masv"]
         self.__ngaysinh = self.__json["ngaysinh"]
         self.__hoten = self.__json["hoten"]
-        self.__hotenAnh = self.__json["hotenAnh"]
-        self.__Bac = self.__json["Bac"]
+        self.__hoten_anh = self.__json["hotenAnh"]
+        self.__bac = self.__json["Bac"]
         self.__mahe = self.__json["mahe"]
         self.__dotnam = self.__json["dotnam"]
         self.__loaitotnghiep = self.__json["loaitotnghiep"]
-        self.__loaitotnghiepAnh = self.__json["loaitotnghiepAnh"]
+        self.__loaitotnghiep_anh = self.__json["loaitotnghiepAnh"]
         self.__sobang = self.__json["sobang"]
         self.__sovaoso = self.__json["sovaoso"]
         self.__ngayqd = self.__json["ngayqd"]
         self.__tenbac = self.__json["tenbac"]
-        self.__tenbacAnh = self.__json["tenbacAnh"]
+        self.__tenbac_anh = self.__json["tenbacAnh"]
         self.__tenhe = self.__json["tenhe"]
-        self.__tenheAnh = self.__json["tenheAnh"]
+        self.__tenhe_anh = self.__json["tenheAnh"]
         self.__tennganh = self.__json["tennganh"]
-        self.__tennganhAnh = self.__json["tennganhAnh"]
+        self.__tennganh_anh = self.__json["tennganhAnh"]
 
     def get_string(self):
         dstn_string = []
@@ -36,7 +36,7 @@ class DSTNItem:
             dstn_string.append(["Mã sinh viên",  self.__masv])
             dstn_string.append(["Ngày sinh", self.__ngaysinh])
             dstn_string.append(["Họ và tên", self.__hoten])
-            dstn_string.append(["Bậc", self.__Bac])
+            dstn_string.append(["Bậc", self.__bac])
             dstn_string.append(["Tên bậc", self.__tenbac])
             dstn_string.append(["Mã hệ", self.__mahe])
             dstn_string.append(["Tên hệ", self.__tenhe])
@@ -50,14 +50,14 @@ class DSTNItem:
         if self.__language == "en":
             dstn_string.append(["Student ID", self.__masv])
             dstn_string.append(["Birthday", self.__ngaysinh])
-            dstn_string.append(["Name", self.__hotenAnh])
-            dstn_string.append(["Type", self.__Bac])
-            dstn_string.append(["Type name", self.__tenbacAnh])
+            dstn_string.append(["Name", self.__hoten_anh])
+            dstn_string.append(["Type", self.__bac])
+            dstn_string.append(["Type name", self.__tenbac_anh])
             dstn_string.append(["Type code", self.__mahe])
-            dstn_string.append(["Type code name", self.__tenheAnh])
+            dstn_string.append(["Type code name", self.__tenhe_anh])
             dstn_string.append(["Year", self.__dotnam])
-            dstn_string.append(["Major name", self.__tennganhAnh])
-            dstn_string.append(["Graduation rank", self.__loaitotnghiepAnh])
+            dstn_string.append(["Major name", self.__tennganh_anh])
+            dstn_string.append(["Graduation rank", self.__loaitotnghiep_anh])
             dstn_string.append(["Degree ID", self.__sobang])
             dstn_string.append(["Degree in book ID", self.__sovaoso])
             dstn_string.append(["Issue date", self.__ngayqd])
@@ -75,12 +75,12 @@ class DSTNRequest:
         self.__page = kwargs.get("page", 1),
         self.__sord = kwargs.get("sord", "desc"),
         self.__student_id = kwargs.get("student_id", None)
-        self.__birthday = kwargs.get("birthday", None)
+        self.__degree_id = kwargs.get("degree_id", None)
         self.__language = kwargs.get("language", None)
 
         self.__params = {
             "masv": self.__student_id,
-            "ngaysinh": self.__birthday,
+            "ngaysinh": self.__degree_id,
             "rows": self.__rows,
             "page": self.__page,
             "sord": self.__sord
