@@ -1,7 +1,6 @@
 import requests as rq
 import termtables as tt
 
-
 class DSTNItem:
     def __init__(self, **kwargs):
         self.__json = kwargs.get("json", None)
@@ -71,27 +70,27 @@ class DSTNItem:
 class DSTNRequest:
     def __init__(self, **kwargs):
         self.__base_url = kwargs.get("base_url", None)
-        self.__rows = kwargs.get("rows", 10),
-        self.__page = kwargs.get("page", 1),
-        self.__sord = kwargs.get("sord", "desc"),
-        self.__student_id = kwargs.get("student_id", None)
+        self.__results = kwargs.get("results", None),
+        self.__headers = kwargs.get("headers", None),
+        self.__student_name = kwargs.get("student_name", None)
         self.__degree_id = kwargs.get("degree_id", None)
         self.__language = kwargs.get("language", None)
 
         self.__params = {
-            "masv": self.__student_id,
-            "ngaysinh": self.__degree_id,
-            "rows": self.__rows,
-            "page": self.__page,
-            "sord": self.__sord
+            "masv": self.__student_name,
+            "sobang": self.__degree_id,
+            "rows": self.__results[0]["rows"],
+            "page": self.__results[0]["page"],
+            "sord": self.__results[0]["sord"],
         }
 
     def get(self):
         response = rq.get(
             url=self.__base_url,
-            params=self.__params
+            params=self.__params,
+            headers=self.__headers[0],
         )
-
+        
         if response.status_code != 200:
             with open("error.html", "w+") as f:
                 print(response.content, file=f)
