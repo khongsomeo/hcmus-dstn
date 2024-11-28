@@ -1,8 +1,22 @@
+from abc import abstractmethod
 import requests as rq
 import termtables as tt
 
+
 class DSTNItem:
+    """Parse a JSON DSTN to beautified - table format.
+
+    Author
+        - Quan H. Tran <quan@trhgquan.xyz>, Xuong L. Tran <xuong@trhgquan.xyz>
+    """
+
     def __init__(self, **kwargs):
+        """Initialization
+
+        Author:
+            - Quan H. Tran <quan@trhgquan.xyz>
+        """
+
         self.__json = kwargs.get("json", None)
         self.__language = kwargs.get("language", "vn")
 
@@ -10,6 +24,12 @@ class DSTNItem:
             self.parse()
 
     def parse(self):
+        """Parsing a JSON result to class property.
+
+        Author:
+            - Quan H. Tran <quan@trhgquan.xyz>
+        """
+
         self.__masv = self.__json["masv"]
         self.__ngaysinh = self.__json["ngaysinh"]
         self.__hoten = self.__json["hoten"]
@@ -30,6 +50,15 @@ class DSTNItem:
         self.__tennganh_anh = self.__json["tennganhAnh"]
 
     def get_string(self):
+        """Parsing class property to formatted (tabular) UI
+
+        Returns:
+            _str_: _the tabular string_
+
+        Author:
+            - Quan H. Tran <quan@trhgquan.xyz>
+        """
+
         dstn_string = []
         if self.__language == "vn":
             dstn_string.append(["Mã sinh viên",  self.__masv])
@@ -68,29 +97,92 @@ class DSTNItem:
 
 
 class DSTNRequest:
+    """Abstract request class
+
+    Author:
+        - Xuong L. Tran <xuong@trhgquan.xyz>
+    """
+
     def __init__(self, **kwargs):
-        self.__base_url = kwargs.get("base_url", None)
-        self.__results = kwargs.get("results", None),
-        self.__headers = kwargs.get("headers", None),
+        """Initialize
+
+        Author:
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        # Base API URL
+        self.base_url = kwargs.get("base_url", None)
+
+        # Result parameters
+        self.results = kwargs.get("results", None)
+
+        # Headers for the request.
+        self.headers = kwargs.get("headers", None)
+
+        # Query parameter
+        self.params = {
+            "rows": self.results["rows"],
+            "page": self.results["page"],
+            "sord": self.results["sord"],
+        }
+
+    def get(self):
+        """Sending a GET request
+
+        Returns:
+            Response: response data.
+
+        Author:
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+        response = rq.get(
+            url=self.base_url,
+            params=self.params,
+            headers=self.headers,
+        )
+        return response
+
+    @abstractmethod
+    def process(self):
+        pass
+
+
+class DSTNSingleRequest(DSTNRequest):
+    """Processing a single user check
+
+    Author:
+        - Quan H. Tran <quan@trhgquan.xyz>
+        - Xuong L. Tran <xuong@trhgquan.xyz>
+    """
+
+    def __init__(self, **kwargs):
+        """Initialization
+
+        Author:
+            - Quan H. Tran <quan@trhgquan.xyz>
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        super().__init__(**kwargs)
+
+        # Getting required parameters
         self.__student_name = kwargs.get("student_name", None)
         self.__degree_id = kwargs.get("degree_id", None)
         self.__language = kwargs.get("language", None)
 
-        self.__params = {
-            "masv": self.__student_name,
-            "sobang": self.__degree_id,
-            "rows": self.__results[0]["rows"],
-            "page": self.__results[0]["page"],
-            "sord": self.__results[0]["sord"],
-        }
+        # Update masv and sobang to parameters
+        self.params["masv"] = self.__student_name
+        self.params["sobang"] = self.__degree_id
 
-    def get(self):
-        response = rq.get(
-            url=self.__base_url,
-            params=self.__params,
-            headers=self.__headers[0],
-        )
-        
+    def process(self):
+        """Processing to get the result.
+
+        Author:
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        response = self.get()
+
         if response.status_code != 200:
             with open("error.html", "w+") as f:
                 print(response.content, file=f)
@@ -109,3 +201,46 @@ class DSTNRequest:
 
                 for record in record_list:
                     print(record)
+
+
+class DSTNListRequest(DSTNRequest):
+    """Processing a list of users
+
+    Author:
+        - Xuong L. Tran <xuong@trhgquan.xyz>
+    """
+
+    def __init__(self, **kwargs):
+        """Initialization
+
+        Author:
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        super().__init__(**kwargs)
+        self.__student_list = kwargs.get("student_list", None)
+
+    def process(self):
+        """Processing to get the result.
+
+        Author:
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        for name, degree_id in self.__student_list:
+            self.params["masv"] = name
+            self.params["sobang"] = degree_id
+
+            response = self.get()
+
+            if response.status_code != 200:
+                with open("error.html", "w+") as f:
+                    print(response.content, file=f)
+                    print(
+                        f"Error code: {response.status_code}, logged to error.html")
+                break
+            else:
+                response_json = response.json()
+                degree_status = "VALID" if (
+                    response_json["total"] == 1) else "INVALID"
+                print(f"{name} - Status: {degree_status}")
