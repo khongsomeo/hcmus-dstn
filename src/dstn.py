@@ -1,4 +1,13 @@
+"""DSTN Classes
+
+Author(s):
+    - Quan H. Tran <quan@trhgquan.xyz>
+    - Xuong L. Tran <xuong@trhgquan.xyz>
+    - Me A. Doge <domyeukemphancam@trhgquan.xyz>
+"""
+
 from abc import abstractmethod
+from .exception import NotFoundException, HTTPException
 import requests as rq
 import termtables as tt
 
@@ -13,13 +22,15 @@ class DSTNItem:
     Author
         - Quan H. Tran <quan@trhgquan.xyz>
         - Xuong L. Tran <xuong@trhgquan.xyz>
+        - Me A. Doge <domyeukemphancam@trhgquan.xyz>
     """
 
     def __init__(self, **kwargs):
         """Initialization
 
-        Author:
+        Author(s):
             - Quan H. Tran <quan@trhgquan.xyz>
+            - Me A. Doge <domyeukemphancam@trhgquan.xyz>
         """
 
         self.__json = kwargs.get("json", None)
@@ -31,8 +42,9 @@ class DSTNItem:
     def parse(self):
         """Parsing a JSON result to class property.
 
-        Author:
+        Author(s):
             - Quan H. Tran <quan@trhgquan.xyz>
+            - Me A. Doge <domyeukemphancam@trhgquan.xyz>
         """
 
         self.__masv = self.__json["masv"]
@@ -60,7 +72,7 @@ class DSTNItem:
         Returns:
             _str_: _the tabular string_
 
-        Author:
+        Author(s):
             - Quan H. Tran <quan@trhgquan.xyz>
         """
 
@@ -104,15 +116,17 @@ class DSTNItem:
 class DSTNRequest:
     """Abstract request class
 
-    Author:
+    Author(s):
         - Xuong L. Tran <xuong@trhgquan.xyz>
+        - Me A. Doge <domyeukemphancam@trhgquan.xyz>
     """
 
     def __init__(self, **kwargs):
         """Initialize
 
-        Author:
+        Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
+            - Me A. Doge <domyeukemphancam@trhgquan.xyz>
         """
 
         # Base API URL
@@ -137,8 +151,9 @@ class DSTNRequest:
         Returns:
             Response: response data.
 
-        Author:
+        Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
+            - Me A. Doge <domyeukemphancam@trhgquan.xyz>
         """
 
         response = rq.get(
@@ -149,15 +164,13 @@ class DSTNRequest:
 
         # HTTP error (invalid requests, missing parameters, etc.)
         if response.status_code != 200:
-            raise Exception(
-                {"response": response, "message": "StatusError: HTTP error"})
+            raise HTTPException(response=response)
 
         response_json = response.json()
 
         # No result (fake degree, wrong name, etc.)
         if response_json["total"] == 0:
-            raise Exception(
-                {"message": "ResultError: No records found"})
+            raise NotFoundException("No results found")
 
         return response_json
 
@@ -169,17 +182,19 @@ class DSTNRequest:
 class DSTNSingleRequest(DSTNRequest):
     """Processing a single user check
 
-    Author:
+    Author(s):
         - Quan H. Tran <quan@trhgquan.xyz>
         - Xuong L. Tran <xuong@trhgquan.xyz>
+        - Me A. Doge <domyeukemphancam@trhgquan.xyz>
     """
 
     def __init__(self, **kwargs):
         """Initialization
 
-        Author:
+        Author(s):
             - Quan H. Tran <quan@trhgquan.xyz>
             - Xuong L. Tran <xuong@trhgquan.xyz>
+            - Me A. Doge <domyeukemphancam@trhgquan.xyz>
         """
 
         super().__init__(**kwargs)
@@ -196,25 +211,26 @@ class DSTNSingleRequest(DSTNRequest):
     def process(self):
         """Processing to get the result.
 
-        Author:
+        Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
+            - Me A. Doge <domyeukemphancam@trhgquan.xyz>
         """
 
         try:
             response_json = self.get()
 
-        except Exception as e:
-            (exception_dict,) = e.args
+        # No records found
+        except NotFoundException as e:
+            print(e)
 
-            response = exception_dict.get("response", None)
+        # Error while playing with HTTP
+        except HTTPException as e:
+            print(e)
 
-            if response is not None:
-                with open(SINGLE_LOG, "w+") as f:
-                    print(response.content, file=f)
-                    print(exception_dict["message"])
+            response = e.response
 
-            else:
-                print(exception_dict["message"])
+            with open(SINGLE_LOG, "w+") as f:
+                print(response.content, file=f)
 
         else:
             record_list = [
@@ -229,14 +245,14 @@ class DSTNSingleRequest(DSTNRequest):
 class DSTNListRequest(DSTNRequest):
     """Processing a list of users
 
-    Author:
+    Author(s):
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
     def __init__(self, **kwargs):
         """Initialization
 
-        Author:
+        Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
         """
 
@@ -246,7 +262,7 @@ class DSTNListRequest(DSTNRequest):
     def process(self):
         """Processing to get the result.
 
-        Author:
+        Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
         """
 
@@ -257,18 +273,18 @@ class DSTNListRequest(DSTNRequest):
             try:
                 _ = self.get()
 
-            except Exception as e:
-                (exception_dict,) = e.args
+            # No records found
+            except NotFoundException as e:
+                print(f"{name} - Status: INVALID")
 
-                response = exception_dict.get("response", None)
+            # Error while playing with HTTP
+            except HTTPException as e:
+                print(e)
 
-                if response is not None:
-                    with open(MULTIPLE_LOG, "w+") as f:
-                        print(response.content, file=f)
-                        print(exception_dict["message"])
+                response = e.response
 
-                else:
-                    print(f"{name} - Status: INVALID")
+                with open(MULTIPLE_LOG, "w+") as f:
+                    print(response.content, file=f)
 
             else:
                 print(f"{name} - Status: VALID")
