@@ -2,12 +2,17 @@ from abc import abstractmethod
 import requests as rq
 import termtables as tt
 
+# Position to save logs
+SINGLE_LOG = "error_single.html"
+MULTIPLE_LOG = "error_multiple.html"
+
 
 class DSTNItem:
     """Parse a JSON DSTN to beautified - table format.
 
     Author
-        - Quan H. Tran <quan@trhgquan.xyz>, Xuong L. Tran <xuong@trhgquan.xyz>
+        - Quan H. Tran <quan@trhgquan.xyz>
+        - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
     def __init__(self, **kwargs):
@@ -75,7 +80,7 @@ class DSTNItem:
             dstn_string.append(["Số vào sổ", self.__sovaoso])
             dstn_string.append(["Ngày quyết định", self.__ngayqd])
 
-        if self.__language == "en":
+        elif self.__language == "en":
             dstn_string.append(["Student ID", self.__masv])
             dstn_string.append(["Birthday", self.__ngaysinh])
             dstn_string.append(["Name", self.__hoten_anh])
@@ -135,12 +140,26 @@ class DSTNRequest:
         Author:
             - Xuong L. Tran <xuong@trhgquan.xyz>
         """
+
         response = rq.get(
             url=self.base_url,
             params=self.params,
             headers=self.headers,
         )
-        return response
+
+        # HTTP error (invalid requests, missing parameters, etc.)
+        if response.status_code != 200:
+            raise Exception(
+                {"response": response, "message": "StatusError: HTTP error"})
+
+        response_json = response.json()
+
+        # No result (fake degree, wrong name, etc.)
+        if response_json["total"] == 0:
+            raise Exception(
+                {"message": "ResultError: No records found"})
+
+        return response_json
 
     @abstractmethod
     def process(self):
@@ -181,26 +200,30 @@ class DSTNSingleRequest(DSTNRequest):
             - Xuong L. Tran <xuong@trhgquan.xyz>
         """
 
-        response = self.get()
+        try:
+            response_json = self.get()
 
-        if response.status_code != 200:
-            with open("error.html", "w+") as f:
-                print(response.content, file=f)
-                print(
-                    f"Error code: {response.status_code}, logged to error.html")
-        else:
-            response_json = response.json()
+        except Exception as e:
+            (exception_dict,) = e.args
 
-            if response_json["total"] == 0:
-                print("No records found. Please check informations again.")
+            response = exception_dict.get("response", None)
+
+            if response is not None:
+                with open(SINGLE_LOG, "w+") as f:
+                    print(response.content, file=f)
+                    print(exception_dict["message"])
+
             else:
-                record_list = [
-                    DSTNItem(
-                        json=record, language=self.__language)
-                    for record in response_json["rows"]]
+                print(exception_dict["message"])
 
-                for record in record_list:
-                    print(record)
+        else:
+            record_list = [
+                DSTNItem(
+                    json=record, language=self.__language)
+                for record in response_json["rows"]]
+
+            for record in record_list:
+                print(record)
 
 
 class DSTNListRequest(DSTNRequest):
@@ -231,16 +254,21 @@ class DSTNListRequest(DSTNRequest):
             self.params["masv"] = name
             self.params["sobang"] = degree_id
 
-            response = self.get()
+            try:
+                _ = self.get()
 
-            if response.status_code != 200:
-                with open("error.html", "w+") as f:
-                    print(response.content, file=f)
-                    print(
-                        f"Error code: {response.status_code}, logged to error.html")
-                break
+            except Exception as e:
+                (exception_dict,) = e.args
+
+                response = exception_dict.get("response", None)
+
+                if response is not None:
+                    with open(MULTIPLE_LOG, "w+") as f:
+                        print(response.content, file=f)
+                        print(exception_dict["message"])
+
+                else:
+                    print(f"{name} - Status: INVALID")
+
             else:
-                response_json = response.json()
-                degree_status = "VALID" if (
-                    response_json["total"] == 1) else "INVALID"
-                print(f"{name} - Status: {degree_status}")
+                print(f"{name} - Status: VALID")
