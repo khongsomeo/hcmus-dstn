@@ -10,7 +10,6 @@ def main():
                         help="Config file (config.json)")
 
     sub_parsers = parser.add_subparsers(dest="mode", required=True)
-    # parser.add_argument("--mode", default="single", help="Check mode")
 
     # Single mode
     single = sub_parsers.add_parser("single")
@@ -50,7 +49,7 @@ def main():
 
     # Multiple mode
     elif args.mode == "multiple":
-        
+
         student_list = []
 
         with open(args.file, "r+", encoding="utf8") as f:
