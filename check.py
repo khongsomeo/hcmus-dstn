@@ -1,13 +1,15 @@
 from argparse import ArgumentParser
 from src.dstn import DSTNSingleRequest, DSTNListRequest
+from pathlib import Path
 import json
+import yaml
 import csv
 
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("--config", default="config.json",
-                        help="Config file (config.json)")
+    parser.add_argument("--config", default="configs/config.json",
+                        help="Config file (config.json/config.yaml)")
 
     sub_parsers = parser.add_subparsers(dest="mode", required=True)
 
@@ -26,9 +28,16 @@ def main():
 
     args = parser.parse_args()
 
-    # Load config from multiple
+    # Load config (with multiple extensions)
+    config_extension = Path(args.config).suffix
     with open(args.config, "r+", encoding="utf8") as f:
-        config = json.load(f)
+        # JSON format
+        if config_extension == ".json":
+            config = json.load(f)
+
+        # YAML format
+        elif config_extension == ".yaml":
+            config = yaml.load(f, Loader=yaml.SafeLoader)
 
     # Single mode
     if args.mode == "single":
@@ -49,7 +58,6 @@ def main():
 
     # Multiple mode
     elif args.mode == "multiple":
-
         student_list = []
 
         with open(args.file, "r+", encoding="utf8") as f:
