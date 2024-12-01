@@ -46,18 +46,34 @@ name2,degreeid2
 
 ## Configurations
 
-Configurations can be found in `config.json`:
+Configurations can be found in `configs/config.json` and `configs/config.yaml`. By default, the program will use configs from `config.json` (though they have the same content).
+
+`configs/config.json`:
 
 ```json
 {
     "api_url": "https://example.com/dstn/api", // Official school API
-    // ... do not edit the User-Agent
+    "headers": {
+      "User-Agent": ... // Do not edit the User-Agent
+    },
     "results": {
       "rows": 10,                              // Max of results per row
       "page": 1,                               // Show results per page.
       "sord": "desc"                           // Sorting order
     }
 }
+```
+
+`configs/config.yaml`:
+
+```yml
+api_url: https://example.com/dstn/api
+headers:
+    User-Agent: ... # Do not edit the User-Agent
+results:
+    rows: 10
+    page: 1
+    sord: desc
 ```
 
 ## LICENSE
