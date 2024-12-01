@@ -130,7 +130,7 @@ class DSTNRequest:
         """
 
         # Base API URL
-        self.base_url = kwargs.get("base_url", None)
+        self.api_url = kwargs.get("api_url", None)
 
         # Result parameters
         self.results = kwargs.get("results", None)
@@ -157,7 +157,7 @@ class DSTNRequest:
         """
 
         response = rq.get(
-            url=self.base_url,
+            url=self.api_url,
             params=self.params,
             headers=self.headers,
         )
@@ -199,14 +199,11 @@ class DSTNSingleRequest(DSTNRequest):
 
         super().__init__(**kwargs)
 
-        # Getting required parameters
-        self.__student_name = kwargs.get("student_name", None)
-        self.__degree_id = kwargs.get("degree_id", None)
         self.__language = kwargs.get("language", None)
 
         # Update masv and sobang to parameters
-        self.params["masv"] = self.__student_name
-        self.params["sobang"] = self.__degree_id
+        self.params["masv"] = kwargs.get("student_name", None)
+        self.params["sobang"] = kwargs.get("degree_id", None)
 
     def process(self):
         """Processing to get the result.
