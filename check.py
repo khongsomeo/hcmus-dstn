@@ -41,18 +41,14 @@ def main():
 
     # Single mode
     if args.mode == "single":
-        student_name = args.student_name
-        degree_id = args.degree_id
-        language = args.language
+        # Add student info to parameters
+        config.update({
+            "student_name": args.student_name,
+            "degree_id": args.degree_id,
+            "language": args.language
+        })
 
-        req = DSTNSingleRequest(
-            base_url=config["api_url"],
-            results=config["results"],
-            headers=config["headers"],
-            student_name=student_name,
-            degree_id=degree_id,
-            language=language
-        )
+        req = DSTNSingleRequest(**config)
 
         req.process()
 
@@ -60,6 +56,7 @@ def main():
     elif args.mode == "multiple":
         student_list = []
 
+        # Extract student list from file.
         with open(args.file, "r+", encoding="utf8") as f:
             reader = csv.reader(f)
 
@@ -67,12 +64,10 @@ def main():
                 if (len(row) > 0):
                     student_list.append(tuple(row))
 
-        req = DSTNListRequest(
-            base_url=config["api_url"],
-            results=config["results"],
-            headers=config["headers"],
-            student_list=student_list
-        )
+        # Add student list to list of parameters
+        config["student_list"] = student_list
+
+        req = DSTNListRequest(**config)
 
         req.process()
 

@@ -8,6 +8,8 @@ Author(s):
 class HTTPException(Exception):
     """HttpException for DSTN
 
+    For errors related to HTTP Requests.
+
     Author(s):
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
@@ -44,6 +46,8 @@ class HTTPException(Exception):
 
 class NotFoundException(Exception):
     """NotFoundException for DSTN
+
+    For errors related to invalid informations.
 
     Author(s):
         - Xuong L. Tran <xuong@trhgquan.xyz>
