@@ -219,10 +219,9 @@ class DSTNSingleRequest(DSTNRequest):
                 print(response.content, file=log_handler)
 
         else:
-            record_list.append(
-                DSTNItem(
-                    json=record, language=self.__language)
-                for record in response_json["rows"])
+            for record in response_json["rows"]:
+                record_list.append(
+                    DSTNItem(json=record, language=self.__language))
 
         return record_list
 
