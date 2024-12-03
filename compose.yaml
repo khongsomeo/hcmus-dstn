@@ -1,5 +1,7 @@
 version: "3.8"
+name: hcmus-dstn-docker
+
 services:
-    cli:
+    hcmus-dstn:
         image: "khongsomeo/hcmus-dstn"
         build: .
