@@ -76,4 +76,4 @@ class NotFoundException(Exception):
 
         if self.message:
             return f"NotFoundException: {self.message}"
-        return f"NotFoundException: default message"
+        return "NotFoundException: default message"

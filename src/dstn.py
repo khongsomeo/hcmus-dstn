@@ -7,9 +7,9 @@ Author(s):
 """
 
 from abc import abstractmethod
-from .exception import NotFoundException, HTTPException
 import requests as rq
 import termtables as tt
+from .exception import NotFoundException, HTTPException
 
 # Position to save logs
 SINGLE_LOG = "error_single.html"
@@ -33,38 +33,15 @@ class DSTNItem:
             - Me A. Doge <domyeukemphancam@trhgquan.xyz>
         """
 
-        self.__json = kwargs.get("json", None)
-        self.__language = kwargs.get("language", "vn")
+        self.info = {
+            "language": kwargs.get("language", "vn")
+        }
 
-        if self.__json is not None:
-            self.parse()
+        json_data = kwargs.get("json", None)
 
-    def parse(self):
-        """Parsing a JSON result to class property.
-
-        Author(s):
-            - Quan H. Tran <quan@trhgquan.xyz>
-            - Me A. Doge <domyeukemphancam@trhgquan.xyz>
-        """
-
-        self.__masv = self.__json["masv"]
-        self.__ngaysinh = self.__json["ngaysinh"]
-        self.__hoten = self.__json["hoten"]
-        self.__hoten_anh = self.__json["hotenAnh"]
-        self.__bac = self.__json["Bac"]
-        self.__mahe = self.__json["mahe"]
-        self.__dotnam = self.__json["dotnam"]
-        self.__loaitotnghiep = self.__json["loaitotnghiep"]
-        self.__loaitotnghiep_anh = self.__json["loaitotnghiepAnh"]
-        self.__sobang = self.__json["sobang"]
-        self.__sovaoso = self.__json["sovaoso"]
-        self.__ngayqd = self.__json["ngayqd"]
-        self.__tenbac = self.__json["tenbac"]
-        self.__tenbac_anh = self.__json["tenbacAnh"]
-        self.__tenhe = self.__json["tenhe"]
-        self.__tenhe_anh = self.__json["tenheAnh"]
-        self.__tennganh = self.__json["tennganh"]
-        self.__tennganh_anh = self.__json["tennganhAnh"]
+        if json_data is not None:
+            for key, value in json_data.items():
+                self.info[key] = value
 
     def get_string(self):
         """Parsing class property to formatted (tabular) UI
@@ -77,35 +54,36 @@ class DSTNItem:
         """
 
         dstn_string = []
-        if self.__language == "vn":
-            dstn_string.append(["Mã sinh viên",  self.__masv])
-            dstn_string.append(["Ngày sinh", self.__ngaysinh])
-            dstn_string.append(["Họ và tên", self.__hoten])
-            dstn_string.append(["Bậc", self.__bac])
-            dstn_string.append(["Tên bậc", self.__tenbac])
-            dstn_string.append(["Mã hệ", self.__mahe])
-            dstn_string.append(["Tên hệ", self.__tenhe])
-            dstn_string.append(["Đợt năm", self.__dotnam])
-            dstn_string.append(["Tên ngành", self.__tennganh])
-            dstn_string.append(["Loại tốt nghiệp", self.__loaitotnghiep])
-            dstn_string.append(["Số bằng", self.__sobang])
-            dstn_string.append(["Số vào sổ", self.__sovaoso])
-            dstn_string.append(["Ngày quyết định", self.__ngayqd])
+        if self.info["language"] == "vn":
+            dstn_string.append(["Mã sinh viên",  self.info["masv"]])
+            dstn_string.append(["Ngày sinh", self.info["ngaysinh"]])
+            dstn_string.append(["Họ và tên", self.info["hoten"]])
+            dstn_string.append(["Bậc", self.info["Bac"]])
+            dstn_string.append(["Tên bậc", self.info["tenbac"]])
+            dstn_string.append(["Mã hệ", self.info["mahe"]])
+            dstn_string.append(["Tên hệ", self.info["tenhe"]])
+            dstn_string.append(["Đợt năm", self.info["dotnam"]])
+            dstn_string.append(["Tên ngành", self.info["tennganh"]])
+            dstn_string.append(["Loại tốt nghiệp", self.info["loaitotnghiep"]])
+            dstn_string.append(["Số bằng", self.info["sobang"]])
+            dstn_string.append(["Số vào sổ", self.info["sovaoso"]])
+            dstn_string.append(["Ngày quyết định", self.info["ngayqd"]])
 
-        elif self.__language == "en":
-            dstn_string.append(["Student ID", self.__masv])
-            dstn_string.append(["Birthday", self.__ngaysinh])
-            dstn_string.append(["Name", self.__hoten_anh])
-            dstn_string.append(["Type", self.__bac])
-            dstn_string.append(["Type name", self.__tenbac_anh])
-            dstn_string.append(["Type code", self.__mahe])
-            dstn_string.append(["Type code name", self.__tenhe_anh])
-            dstn_string.append(["Year", self.__dotnam])
-            dstn_string.append(["Major name", self.__tennganh_anh])
-            dstn_string.append(["Graduation rank", self.__loaitotnghiep_anh])
-            dstn_string.append(["Degree ID", self.__sobang])
-            dstn_string.append(["Degree in book ID", self.__sovaoso])
-            dstn_string.append(["Issue date", self.__ngayqd])
+        elif self.info["language"] == "en":
+            dstn_string.append(["Student ID", self.info["masv"]])
+            dstn_string.append(["Birthday", self.info["ngaysinh"]])
+            dstn_string.append(["Name", self.info["hotenAnh"]])
+            dstn_string.append(["Type", self.info["Bac"]])
+            dstn_string.append(["Type name", self.info["tenbacAnh"]])
+            dstn_string.append(["Type code", self.info["mahe"]])
+            dstn_string.append(["Type code name", self.info["tenheAnh"]])
+            dstn_string.append(["Year", self.info["dotnam"]])
+            dstn_string.append(["Major name", self.info["tennganhAnh"]])
+            dstn_string.append(
+                ["Graduation rank", self.info["loaitotnghiepAnh"]])
+            dstn_string.append(["Degree ID", self.info["sobang"]])
+            dstn_string.append(["Degree in book ID", self.info["sovaoso"]])
+            dstn_string.append(["Issue date", self.info["ngayqd"]])
 
         return tt.to_string(dstn_string, style=tt.styles.ascii_thin_double)
 
@@ -176,7 +154,11 @@ class DSTNRequest:
 
     @abstractmethod
     def process(self):
-        pass
+        """Processing data (abstract method)
+
+        Author:
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
 
 
 class DSTNSingleRequest(DSTNRequest):
@@ -217,17 +199,17 @@ class DSTNSingleRequest(DSTNRequest):
             response_json = self.get()
 
         # No records found
-        except NotFoundException as e:
-            print(e)
+        except NotFoundException as notfound_error_handler:
+            print(notfound_error_handler)
 
         # Error while playing with HTTP
-        except HTTPException as e:
-            print(e)
+        except HTTPException as http_error_handler:
+            print(http_error_handler)
 
-            response = e.response
+            response = http_error_handler.response
 
-            with open(SINGLE_LOG, "w+") as f:
-                print(response.content, file=f)
+            with open(SINGLE_LOG, "w+", encoding="utf8") as log_handler:
+                print(response.content, file=log_handler)
 
         else:
             record_list = [
@@ -271,17 +253,17 @@ class DSTNListRequest(DSTNRequest):
                 _ = self.get()
 
             # No records found
-            except NotFoundException as e:
+            except NotFoundException:
                 print(f"{name} - Status: INVALID")
 
             # Error while playing with HTTP
-            except HTTPException as e:
-                print(e)
+            except HTTPException as http_error_handler:
+                print(http_error_handler)
 
-                response = e.response
+                response = http_error_handler.response
 
-                with open(MULTIPLE_LOG, "w+") as f:
-                    print(response.content, file=f)
+                with open(MULTIPLE_LOG, "w+", encoding="utf8") as multiple_log_handler:
+                    print(response.content, file=multiple_log_handler)
 
             else:
                 print(f"{name} - Status: VALID")
