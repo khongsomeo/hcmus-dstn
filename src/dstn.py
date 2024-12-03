@@ -141,8 +141,8 @@ class DSTNRequest:
                 headers=self.headers,
                 timeout=60,
             )
-        except rq.exceptions.Timeout:
-            raise HTTPException("Connection timeout")
+        except rq.exceptions.Timeout as timeout_exception_handler:
+            raise HTTPException("Connection timeout") from timeout_exception_handler
 
         # HTTP error (invalid requests, missing parameters, etc.)
         if response.status_code != 200:

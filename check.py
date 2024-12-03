@@ -43,7 +43,7 @@ def main():
     config_extension = Path(args.config).suffix
 
     # Initialize a new config.
-    config = dict()
+    config = {}
 
     with open(args.config, "r+", encoding="utf8") as config_handler:
         # JSON format
