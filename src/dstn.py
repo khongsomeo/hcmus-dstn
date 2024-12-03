@@ -142,7 +142,8 @@ class DSTNRequest:
                 timeout=60,
             )
         except rq.exceptions.Timeout as timeout_exception_handler:
-            raise HTTPException("Connection timeout") from timeout_exception_handler
+            raise HTTPException(
+                "Connection timeout") from timeout_exception_handler
 
         # HTTP error (invalid requests, missing parameters, etc.)
         if response.status_code != 200:
@@ -199,6 +200,8 @@ class DSTNSingleRequest(DSTNRequest):
             - Me A. Doge <domyeukemphancam@trhgquan.xyz>
         """
 
+        record_list = []
+
         try:
             response_json = self.get()
 
@@ -216,13 +219,12 @@ class DSTNSingleRequest(DSTNRequest):
                 print(response.content, file=log_handler)
 
         else:
-            record_list = [
+            record_list.append(
                 DSTNItem(
                     json=record, language=self.__language)
-                for record in response_json["rows"]]
+                for record in response_json["rows"])
 
-            for record in record_list:
-                print(record)
+        return record_list
 
 
 class DSTNListRequest(DSTNRequest):
@@ -249,6 +251,8 @@ class DSTNListRequest(DSTNRequest):
             - Xuong L. Tran <xuong@trhgquan.xyz>
         """
 
+        status_list = []
+
         for name, degree_id in self.__student_list:
             self.params["masv"] = name
             self.params["sobang"] = degree_id
@@ -258,7 +262,7 @@ class DSTNListRequest(DSTNRequest):
 
             # No records found
             except NotFoundException:
-                print(f"{name} - Status: INVALID")
+                status_list.append((name, degree_id, "INVALID"))
 
             # Error while playing with HTTP
             except HTTPException as http_error_handler:
@@ -270,4 +274,6 @@ class DSTNListRequest(DSTNRequest):
                     print(response.content, file=multiple_log_handler)
 
             else:
-                print(f"{name} - Status: VALID")
+                status_list.append((name, degree_id, "VALID"))
+
+        return status_list
