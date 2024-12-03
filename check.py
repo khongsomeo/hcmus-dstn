@@ -1,4 +1,9 @@
 """A CLI for those who don't want to use official HCMUS graduate information lookup website.
+
+Author:
+    - Me A. Doge <domyeukemphancam@trhgquan.xyz>
+    - Quan H. Tran <quan@trhgquan.xyz>
+    - Xuong L. Tran <xuong@trhgquan.xyz>
 """
 
 import json
@@ -7,6 +12,83 @@ from argparse import ArgumentParser
 from pathlib import Path
 import yaml
 from src.dstn import DSTNSingleRequest, DSTNListRequest
+
+
+def handle_single_request(config, args):
+    """Handling single request
+
+    Args:
+        config (dict): config dictionary - retrieved from json/yaml
+        args (dict): args get from argparse
+
+    Author:
+        - Xuong L. Tran <xuong@trhgquan.xyz>
+    """
+
+    # Add student info to parameters
+    config.update({
+        "student_name": args.student_name,
+        "degree_id": args.degree_id,
+        "language": args.language
+    })
+
+    req = DSTNSingleRequest(**config)
+
+    record_list = req.process()
+
+    # Print record to file (if required from arguments)
+    if args.output_file is not None:
+        with open(args.output_file, "w+", encoding="utf8") as output_handler:
+            for record in record_list:
+                print(record, file=output_handler)
+
+        print(f"Results has been written to {args.output_file}")
+
+    else:
+        for record in record_list:
+            print(record)
+
+
+def handle_multiple_request(config, args):
+    """Handling multiple check request
+
+    Args:
+        config (dict): config dictionary - retrieved from json/yaml
+        args (dict): args get from argparse
+
+    Author:
+        - Xuong L. Tran <xuong@trhgquan.xyz>
+    """
+
+    student_list = []
+
+    # Extract student list from file.
+    with open(args.file, "r+", encoding="utf8") as csv_handler:
+        reader = csv.reader(csv_handler)
+
+        for row in reader:
+            if len(row) > 0:
+                student_list.append(tuple(row))
+
+    # Add student list to list of parameters
+    config["student_list"] = student_list
+
+    req = DSTNListRequest(**config)
+
+    record_list = req.process()
+
+    # Print result to csv file.
+    if args.output_file is None:
+        for record in record_list:
+            print(" - ".join(record))
+
+    else:
+        with open(args.output_file, "w+", encoding="utf8") as output_handler:
+            output_writer = csv.writer(output_handler)
+            output_writer.writerow(["Name", "Degree ID", "Status"])
+            output_writer.writerows(record_list)
+
+        print(f"Status has been written to {args.output_file}")
 
 
 def main():
@@ -21,6 +103,8 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("--config", default="configs/config.json",
                         help="Config file (config.json/config.yaml)")
+    parser.add_argument("--output_file", default=None,
+                        help="Path to output file (printing to screen by default)")
 
     sub_parsers = parser.add_subparsers(dest="mode", required=True)
 
@@ -56,35 +140,11 @@ def main():
 
     # Single mode
     if args.mode == "single":
-        # Add student info to parameters
-        config.update({
-            "student_name": args.student_name,
-            "degree_id": args.degree_id,
-            "language": args.language
-        })
-
-        req = DSTNSingleRequest(**config)
-
-        req.process()
+        handle_single_request(config, args)
 
     # Multiple mode
     elif args.mode == "multiple":
-        student_list = []
-
-        # Extract student list from file.
-        with open(args.file, "r+", encoding="utf8") as csv_handler:
-            reader = csv.reader(csv_handler)
-
-            for row in reader:
-                if len(row) > 0:
-                    student_list.append(tuple(row))
-
-        # Add student list to list of parameters
-        config["student_list"] = student_list
-
-        req = DSTNListRequest(**config)
-
-        req.process()
+        handle_multiple_request(config, args)
 
 
 if __name__ == "__main__":
