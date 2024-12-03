@@ -3,7 +3,7 @@ name: Code Linting & Testing
 on:
     push:
         branches:
-            - main
+            - CICD
     pull_request:
         branches:
             - main
@@ -24,7 +24,7 @@ jobs:
               run: |
                   python -m pip install --upgrade pip
                   pip install pylint
-                  pip install -r -requirements.txt
+                  pip install -r requirements.txt
 
             - name: Analysing the code with pylint
               run: |
