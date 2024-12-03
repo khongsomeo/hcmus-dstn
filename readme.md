@@ -1,18 +1,28 @@
 # HCMUS - DSTN
 
-Graduate information lookup, using official HCMUS API.
+Graduate information lookup CLI - for those who don't want to use the official HCMUS graduate information lookup website.
 
 [Official HCMUS graduate information lookup website](https://pdt.hcmus.edu.vn/dstn)
 
 ## Usage
 
-### Install required packages
+### Installation
+
+#### Manually - Install required packages
 
 ```bash
 pip install -r requirements.txt
 ```
 
+#### Docker image
+
+```bash
+docker pull <ghcr link - not available>
+```
+
 ### Check for a single degree
+
+Usage:
 
 ```bash
 usage: check.py single [-h] [--student_name STUDENT_NAME] [--degree_id DEGREE_ID] [--language LANGUAGE]
@@ -26,7 +36,21 @@ optional arguments:
   --language LANGUAGE   Language (en/vn)
 ```
 
+Examples:
+
+```bash
+# Python
+python check.py single --student_name "nguyen van a" --degree_id "QH123456"
+```
+
+```bash
+# Docker image
+docker run khongsomeo/dstn single --student_name "nguyen van a" --degree_id "QH123456"
+```
+
 ### Check for multiple degrees
+
+Usage:
 
 ```bash
 usage: check.py multiple [-h] [--file FILE]
@@ -42,6 +66,18 @@ The `.csv` file must follow this format:
 name1,degreeid1
 name2,degreeid2
 ...
+```
+
+Examples:
+
+```bash
+# Python
+python check.py multiple --file check.csv
+```
+
+```bash
+# Docker image
+docker run khongsomeo/dstn multiple --file check.csv
 ```
 
 ## Configurations
