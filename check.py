@@ -41,6 +41,10 @@ def main():
 
     # Load config (with multiple extensions)
     config_extension = Path(args.config).suffix
+
+    # Initialize a new config.
+    config = dict()
+
     with open(args.config, "r+", encoding="utf8") as config_handler:
         # JSON format
         if config_extension == ".json":

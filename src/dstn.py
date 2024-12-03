@@ -134,11 +134,15 @@ class DSTNRequest:
             - Me A. Doge <domyeukemphancam@trhgquan.xyz>
         """
 
-        response = rq.get(
-            url=self.api_url,
-            params=self.params,
-            headers=self.headers,
-        )
+        try:
+            response = rq.get(
+                url=self.api_url,
+                params=self.params,
+                headers=self.headers,
+                timeout=60,
+            )
+        except rq.exceptions.Timeout:
+            raise HTTPException("Connection timeout")
 
         # HTTP error (invalid requests, missing parameters, etc.)
         if response.status_code != 200:
