@@ -45,7 +45,7 @@ python check.py single --student_name "nguyen van a" --degree_id "QH123456"
 
 ```bash
 # Docker image
-docker run khongsomeo/dstn single --student_name "nguyen van a" --degree_id "QH123456"
+docker run ghcr.io/khongsomeo/hcmus-dstn:release single --student_name "nguyen van a" --degree_id "QH123456"
 ```
 
 ### Check for multiple degrees
@@ -76,8 +76,9 @@ python check.py multiple --file check.csv
 ```
 
 ```bash
-# Docker image
-docker run khongsomeo/dstn multiple --file check.csv
+# This command check for degress in test.csv.
+# $(pwd)/test.csv - path to test.csv file
+docker run -v $(pwd)/test.csv:/hcmus-dstn/test.csv ghcr.io/khongsomeo/hcmus-dstn:release multiple --file test.csv
 ```
 
 ## Configurations
