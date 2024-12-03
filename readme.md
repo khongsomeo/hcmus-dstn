@@ -17,7 +17,7 @@ pip install -r requirements.txt
 #### Docker image
 
 ```bash
-docker pull <ghcr link - not available>
+docker pull ghcr.io/khongsomeo/hcmus-dstn:release
 ```
 
 ### Check for a single degree
