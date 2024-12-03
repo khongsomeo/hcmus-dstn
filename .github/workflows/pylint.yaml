@@ -3,7 +3,7 @@ name: Code Linting & Testing
 on:
     push:
         branches:
-            - CICD
+            - main
     pull_request:
         branches:
             - main
