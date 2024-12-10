@@ -17,7 +17,7 @@ pip install -r requirements.txt
 #### Docker image
 
 ```bash
-docker pull ghcr.io/khongsomeo/hcmus-dstn:release
+docker pull ghcr.io/khongsomeo/hcmus-dstn:latest
 ```
 
 ### Check for a single degree
@@ -45,7 +45,7 @@ python check.py single --student_name "nguyen van a" --degree_id "QH123456"
 
 ```bash
 # Docker image
-docker run ghcr.io/khongsomeo/hcmus-dstn:release single --student_name "nguyen van a" --degree_id "QH123456"
+docker run ghcr.io/khongsomeo/hcmus-dstn:latest single --student_name "nguyen van a" --degree_id "QH123456"
 ```
 
 ### Check for multiple degrees
@@ -78,7 +78,7 @@ python check.py multiple --file check.csv
 ```bash
 # This command check for degress in test.csv.
 # $(pwd)/test.csv - path to test.csv file
-docker run -v $(pwd)/test.csv:/hcmus-dstn/test.csv ghcr.io/khongsomeo/hcmus-dstn:release multiple --file test.csv
+docker run -v $(pwd)/test.csv:/hcmus-dstn/test.csv ghcr.io/khongsomeo/hcmus-dstn:latest multiple --file test.csv
 ```
 
 ## Configurations
