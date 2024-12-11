@@ -43,6 +43,30 @@ class DSTNItem:
             for key, value in json_data.items():
                 self.info[key] = value
 
+    def get_info(self):
+        """Get info saved inside this item (for testing).
+
+        Returns:
+            dict: information of this dict.
+
+        Author(s):
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        return self.info
+
+    def get_language(self):
+        """Get the language used when parsing the result.
+
+        Returns:
+            str: the languaged used when parsing the result.
+
+        Author(s):
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        return self.info["language"]
+
     def get_string(self):
         """Parsing class property to formatted (tabular) UI
 
