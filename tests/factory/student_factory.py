@@ -136,7 +136,7 @@ class StudentFactory:
             "ngaysinh": ngaysinh.strftime("%d/%m/%Y"),
             "hoten": hoten,
             "hotenAnh": hoten,
-            "bac": "DH",
+            "Bac": "DH",
             "tenbac": "Dai hoc",
             "tenbacAnh": "Bachelor of Science",
             "mahe": mahe,

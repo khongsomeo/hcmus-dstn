@@ -79,3 +79,43 @@ class TestDSTNItem(TestCase):
         for field, value in current_info.items():
             if field not in ignored_fields:
                 self.assertEqual(value, self.json[field])
+
+    def test_not_loss_information_vn(self):
+        """Test if the Vietnamese table generated (by using get_string)
+        contain no information loss.
+
+        Author(s):
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        dstn_item = DSTNItem(json=self.json, language="vn")
+
+        # These fields from self.json should appears in the table.
+        should_appear_fields = [
+            "masv", "ngaysinh", "hoten", "Bac",
+            "tenbac", "mahe", "tenhe", "dotnam",
+            "tennganh", "loaitotnghiep", "sobang", "sovaoso", "ngayqd"
+        ]
+
+        for field in should_appear_fields:
+            self.assertIn(self.json[field], str(dstn_item))
+
+    def test_not_loss_information_en(self):
+        """Test if the English table generated (by using get_string)
+        contain no information loss.
+
+        Author(s):
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        dstn_item = DSTNItem(json=self.json, language="en")
+
+        # These fields from self.json should appears in the table.
+        should_appear_fields = [
+            "masv", "ngaysinh", "hotenAnh", "Bac",
+            "tenbacAnh", "mahe", "tenheAnh", "dotnam",
+            "tennganhAnh", "loaitotnghiepAnh", "sobang", "sovaoso", "ngayqd"
+        ]
+
+        for field in should_appear_fields:
+            self.assertIn(self.json[field], str(dstn_item))
