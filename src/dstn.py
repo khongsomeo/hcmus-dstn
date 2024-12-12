@@ -19,7 +19,7 @@ MULTIPLE_LOG = "error_multiple.html"
 class DSTNItem:
     """Parse a JSON DSTN to beautified - table format.
 
-    Author
+    Author(s):
         - Quan H. Tran <quan@trhgquan.xyz>
         - Xuong L. Tran <xuong@trhgquan.xyz>
         - Me A. Doge <domyeukemphancam@trhgquan.xyz>
@@ -185,7 +185,7 @@ class DSTNRequest:
     def process(self):
         """Processing data (abstract method)
 
-        Author:
+        Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
         """
 
