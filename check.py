@@ -10,11 +10,12 @@ import json
 import csv
 from argparse import ArgumentParser
 from pathlib import Path
+from typing import Dict
 import yaml
 from src.dstn import DSTNSingleRequest, DSTNListRequest
 
 
-def handle_single_request(config, args):
+def handle_single_request(config: Dict[str, str], args: Dict[str, str]) -> None:
     """Handling single request
 
     Args:
@@ -49,7 +50,7 @@ def handle_single_request(config, args):
             print(record)
 
 
-def handle_multiple_request(config, args):
+def handle_multiple_request(config: Dict[str, str], args: Dict[str, str]) -> None:
     """Handling multiple check request
 
     Args:

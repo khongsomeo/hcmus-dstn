@@ -12,7 +12,13 @@ class GeneralType:
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
-    def __init__(self, **kwargs):
+    # Name of the type in Vietnamese
+    name_vn: str
+
+    # Name of the type in English
+    name_en: str
+
+    def __init__(self, **kwargs) -> None:
         """Initialization
 
         Author(s):
@@ -48,7 +54,10 @@ class ProgramType(GeneralType):
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
-    def __init__(self, **kwargs):
+    # Code of the program.
+    code: str
+
+    def __init__(self, **kwargs) -> None:
         """Initialize
 
         Author(s):
@@ -58,7 +67,7 @@ class ProgramType(GeneralType):
         super().__init__(**kwargs)
         self.code = kwargs.get("code", None)
 
-    def get_code(self):
+    def get_code(self) -> str:
         """Get the Program Code
 
         Returns:

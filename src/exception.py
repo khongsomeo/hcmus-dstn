@@ -4,6 +4,8 @@ Author(s):
     - Xuong L. Tran <xuong@trhgquan.xyz>
 """
 
+from typing import Optional, Any
+
 
 class HTTPException(Exception):
     """HttpException for DSTN
@@ -14,7 +16,13 @@ class HTTPException(Exception):
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
-    def __init__(self, message=None, **kwargs):
+    # Extra message to return in exception
+    message: str
+
+    # Response from the request
+    response: Any
+
+    def __init__(self, message: Optional[str] = None, **kwargs) -> str:
         """Initialization
 
         Args:
@@ -29,7 +37,7 @@ class HTTPException(Exception):
         self.message = message
         self.response = kwargs.get("response", None)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """__str__ method
 
         Returns:
@@ -53,7 +61,10 @@ class NotFoundException(Exception):
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
-    def __init__(self, *args):
+    # Extra message to return in exception
+    message: str
+
+    def __init__(self, *args) -> None:
         """Initialize
 
         Author(s):
@@ -64,7 +75,7 @@ class NotFoundException(Exception):
 
         self.message = args[0] if args else None
 
-    def __str__(self):
+    def __str__(self) -> str:
         """__str__ method
 
         Returns:

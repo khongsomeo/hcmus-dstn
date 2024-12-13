@@ -7,6 +7,7 @@ Author(s):
 """
 
 from abc import abstractmethod
+from typing import Dict, List, Tuple
 import requests as rq
 import termtables as tt
 from .exception import NotFoundException, HTTPException
@@ -25,7 +26,10 @@ class DSTNItem:
         - Me A. Doge <domyeukemphancam@trhgquan.xyz>
     """
 
-    def __init__(self, **kwargs):
+    # Informations stored
+    info: Dict[str, str]
+
+    def __init__(self, **kwargs) -> None:
         """Initialization
 
         Author(s):
@@ -43,7 +47,7 @@ class DSTNItem:
             for key, value in json_data.items():
                 self.info[key] = value
 
-    def get_info(self):
+    def get_info(self) -> str:
         """Get info saved inside this item (for testing).
 
         Returns:
@@ -55,7 +59,7 @@ class DSTNItem:
 
         return self.info
 
-    def get_language(self):
+    def get_language(self) -> str:
         """Get the language used when parsing the result.
 
         Returns:
@@ -67,11 +71,11 @@ class DSTNItem:
 
         return self.info["language"]
 
-    def get_string(self):
+    def get_string(self) -> str:
         """Parsing class property to formatted (tabular) UI
 
         Returns:
-            _str_: _the tabular string_
+            str: _the tabular string_
 
         Author(s):
             - Quan H. Tran <quan@trhgquan.xyz>
@@ -111,7 +115,17 @@ class DSTNItem:
 
         return tt.to_string(dstn_string, style=tt.styles.ascii_thin_double)
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Get the string representation (tabular) of the Item.
+        This is just basically calling `get_string` method.
+
+        Returns:
+            str: tabular string.
+
+        Author(s):
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
         return self.get_string()
 
 
@@ -123,7 +137,19 @@ class DSTNRequest:
         - Me A. Doge <domyeukemphancam@trhgquan.xyz>
     """
 
-    def __init__(self, **kwargs):
+    # Base API URL
+    api_url: str
+
+    # Result parameters
+    results: Dict[str, str]
+
+    # Headers for the request.
+    headers: Dict[str, str]
+
+    # Query parameter
+    params: Dict[str, str]
+
+    def __init__(self, **kwargs) -> None:
         """Initialize
 
         Author(s):
@@ -165,6 +191,7 @@ class DSTNRequest:
                 headers=self.headers,
                 timeout=60,
             )
+
         except rq.exceptions.Timeout as timeout_exception_handler:
             raise HTTPException(
                 "Connection timeout") from timeout_exception_handler
@@ -199,7 +226,10 @@ class DSTNSingleRequest(DSTNRequest):
         - Me A. Doge <domyeukemphancam@trhgquan.xyz>
     """
 
-    def __init__(self, **kwargs):
+    # Language used in the report.
+    language: str
+
+    def __init__(self, **kwargs) -> None:
         """Initialization
 
         Author(s):
@@ -210,13 +240,13 @@ class DSTNSingleRequest(DSTNRequest):
 
         super().__init__(**kwargs)
 
-        self.__language = kwargs.get("language", None)
+        self.language = kwargs.get("language", None)
 
         # Update masv and sobang to parameters
         self.params["masv"] = kwargs.get("student_name", None)
         self.params["sobang"] = kwargs.get("degree_id", None)
 
-    def process(self):
+    def process(self) -> List[DSTNItem]:
         """Processing to get the result.
 
         Author(s):
@@ -245,7 +275,7 @@ class DSTNSingleRequest(DSTNRequest):
         else:
             for record in response_json["rows"]:
                 record_list.append(
-                    DSTNItem(json=record, language=self.__language))
+                    DSTNItem(json=record, language=self.language))
 
         return record_list
 
@@ -257,7 +287,10 @@ class DSTNListRequest(DSTNRequest):
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
-    def __init__(self, **kwargs):
+    # Student list read from .csv file.
+    student_list: List[Tuple[str, str]]
+
+    def __init__(self, **kwargs) -> None:
         """Initialization
 
         Author(s):
@@ -265,9 +298,9 @@ class DSTNListRequest(DSTNRequest):
         """
 
         super().__init__(**kwargs)
-        self.__student_list = kwargs.get("student_list", None)
+        self.student_list = kwargs.get("student_list", None)
 
-    def process(self):
+    def process(self) -> List[Tuple[str, str, str]]:
         """Processing to get the result.
 
         Author(s):
@@ -276,7 +309,7 @@ class DSTNListRequest(DSTNRequest):
 
         status_list = []
 
-        for name, degree_id in self.__student_list:
+        for name, degree_id in self.student_list:
             self.params["masv"] = name
             self.params["sobang"] = degree_id
 
