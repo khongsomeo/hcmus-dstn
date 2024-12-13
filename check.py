@@ -6,21 +6,19 @@ Author:
     - Xuong L. Tran <xuong@trhgquan.xyz>
 """
 
-import json
 import csv
 from argparse import ArgumentParser
-from pathlib import Path
 from typing import Dict
-import yaml
 from src.dstn import DSTNSingleRequest, DSTNListRequest
+from src.utils import load_config, load_csv
 
 
 def handle_single_request(config: Dict[str, str], args: Dict[str, str]) -> None:
     """Handling single request
 
     Args:
-        config (dict): config dictionary - retrieved from json/yaml
-        args (dict): args get from argparse
+        config (Dict[str, str]): config dictionary - retrieved from json/yaml
+        args (Dict[str, str]): args get from argparse
 
     Author:
         - Xuong L. Tran <xuong@trhgquan.xyz>
@@ -54,22 +52,14 @@ def handle_multiple_request(config: Dict[str, str], args: Dict[str, str]) -> Non
     """Handling multiple check request
 
     Args:
-        config (dict): config dictionary - retrieved from json/yaml
-        args (dict): args get from argparse
+        config (Dict[str, str]): config dictionary - retrieved from json/yaml
+        args (Dict[str, str]): args get from argparse
 
     Author:
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
-    student_list = []
-
-    # Extract student list from file.
-    with open(args.file, "r+", encoding="utf8") as csv_handler:
-        reader = csv.reader(csv_handler)
-
-        for row in reader:
-            if len(row) > 0:
-                student_list.append(tuple(row))
+    student_list = load_csv(args.file)
 
     # Add student list to list of parameters
     config["student_list"] = student_list
@@ -124,20 +114,8 @@ def main():
 
     args = parser.parse_args()
 
-    # Load config (with multiple extensions)
-    config_extension = Path(args.config).suffix
-
-    # Initialize a new config.
-    config = {}
-
-    with open(args.config, "r+", encoding="utf8") as config_handler:
-        # JSON format
-        if config_extension == ".json":
-            config = json.load(config_handler)
-
-        # YAML format
-        elif config_extension == ".yaml":
-            config = yaml.load(config_handler, Loader=yaml.SafeLoader)
+    # Load config from file.
+    config = load_config(args.config)
 
     # Single mode
     if args.mode == "single":

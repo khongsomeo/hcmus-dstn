@@ -128,7 +128,7 @@ class StudentFactory:
         Note that the return is a dict - which is automatically parse from response.json.
 
         Returns:
-            dict: a student's full information
+            Dict[str, str]: a student's full information
 
         Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
