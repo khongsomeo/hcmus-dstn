@@ -23,10 +23,10 @@ class HTTPException(Exception):
     response: Any
 
     def __init__(self, message: Optional[str] = None, **kwargs):
-        """Initialization
+        """Class initialization
 
         Args:
-            message (str): message to inform user.
+            message (Optional[str], optional): message to inform user. Defaults to None.
 
         Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
