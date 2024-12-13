@@ -22,11 +22,11 @@ class HTTPException(Exception):
     # Response from the request
     response: Any
 
-    def __init__(self, message: Optional[str] = None, **kwargs) -> str:
+    def __init__(self, message: Optional[str] = None, **kwargs):
         """Initialization
 
         Args:
-            message (_str_): _message_
+            message (str): message to inform user.
 
         Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
@@ -41,7 +41,7 @@ class HTTPException(Exception):
         """__str__ method
 
         Returns:
-            _str_: _default string_
+            str: _default string_
 
         Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
@@ -79,7 +79,7 @@ class NotFoundException(Exception):
         """__str__ method
 
         Returns:
-            _str_: _default string_
+            str: _default string_
 
         Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>

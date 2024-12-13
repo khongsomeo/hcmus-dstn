@@ -7,7 +7,7 @@ Author(s):
 """
 
 from abc import abstractmethod
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 import requests as rq
 import termtables as tt
 from .exception import NotFoundException, HTTPException
@@ -47,11 +47,11 @@ class DSTNItem:
             for key, value in json_data.items():
                 self.info[key] = value
 
-    def get_info(self) -> str:
+    def get_info(self) -> Dict[str, str]:
         """Get info saved inside this item (for testing).
 
         Returns:
-            dict: information of this dict.
+            Dict[str, str]: information of this DSTNItem, stored as a dict.
 
         Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
@@ -173,7 +173,7 @@ class DSTNRequest:
             "sord": self.results["sord"],
         }
 
-    def get(self):
+    def get(self) -> Any:
         """Sending a GET request
 
         Returns:
@@ -249,6 +249,9 @@ class DSTNSingleRequest(DSTNRequest):
     def process(self) -> List[DSTNItem]:
         """Processing to get the result.
 
+        Returns:
+            List[DSTNItem]: List of DSTNItem results from the API call.
+
         Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>
             - Me A. Doge <domyeukemphancam@trhgquan.xyz>
@@ -302,6 +305,9 @@ class DSTNListRequest(DSTNRequest):
 
     def process(self) -> List[Tuple[str, str, str]]:
         """Processing to get the result.
+
+        Returns:
+            List[Tuple[str, str, str]]: List of validation result (SID, DegreeId, Status)
 
         Author(s):
             - Xuong L. Tran <xuong@trhgquan.xyz>

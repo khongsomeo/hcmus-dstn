@@ -1,4 +1,4 @@
-"""Test for DSTN Item
+"""Test for DSTNItem
 
 Author(s):
     - Xuong L. Tran <xuong@trhgquan.xyz>
