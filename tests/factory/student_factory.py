@@ -7,6 +7,7 @@ Author(s):
 import datetime
 import string
 import random
+from typing import Dict, Optional
 from faker import Faker
 from .type.student_type import ProgramType, GraduationType, MajorType
 
@@ -17,6 +18,18 @@ class StudentFactory:
     Author(s):
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
+
+    # Faker instance to generate fake data
+    fake: Faker
+
+    # Available programs
+    program_type: Dict[str, ProgramType]
+
+    # Available majors
+    major: Dict[str, MajorType]
+
+    # Available graduation type
+    graduation_type: Dict[str, GraduationType]
 
     def __init__(self):
         """Intialize the class.
@@ -30,30 +43,30 @@ class StudentFactory:
 
         # Available program types of a student.
         self.program_type = {
-            "CQ": ProgramType(name_vn="Chinh quy", name_en="Full-time", code=0),
-            "CLC": ProgramType(name_vn="Chat luong cao", name_en="High-quality", code=7),
-            "TT": ProgramType(name_vn="Tien tien", name_en="Advanced Program", code=5),
-            "VP": ProgramType(name_vn="Viet Phap", name_en="Vietnamese-France", code=6)
+            "CQ": ProgramType(name_vn="Chính quy", name_en="Full-time", code=0),
+            "CLC": ProgramType(name_vn="Chất lượng cao", name_en="High-quality", code=7),
+            "TT": ProgramType(name_vn="Tiên tiến", name_en="Advanced Program", code=5),
+            "VP": ProgramType(name_vn="Việt Pháp", name_en="Vietnamese-France", code=6)
         }
 
         # Available majors of a student.
         self.major = {
-            "CNTT": MajorType(name_vn="Cong nghe thong tin", name_en="Information Technology"),
-            "HTTT": MajorType(name_vn="He thong thong tin", name_en="Information Systems"),
-            "KHMT": MajorType(name_vn="Khoa hoc may tinh", name_en="Computer Science"),
-            "CNPM": MajorType(name_vn="Cong nghe phan mem", name_en="Software Engineering"),
+            "CNTT": MajorType(name_vn="Công nghệ thông tin", name_en="Information Technology"),
+            "HTTT": MajorType(name_vn="Hệ thống thông tin", name_en="Information Systems"),
+            "KHMT": MajorType(name_vn="Khoa học máy tính", name_en="Computer Science"),
+            "CNPM": MajorType(name_vn="Công nghệ phần mềm", name_en="Software Engineering"),
         }
 
         # Available graduation type of a student.
         self.graduation_type = {
-            "XS": GraduationType(name_vn="Xuat sac", name_en="Excellent"),
-            "G": GraduationType(name_vn="Gioi", name_en="Very good"),
-            "KH": GraduationType(name_vn="Kha", name_en="Good"),
-            "TBK": GraduationType(name_vn="Trung binh kha", name_en="Average good"),
-            "TB": GraduationType(name_vn="Trung binh", name_en="Average")
+            "XS": GraduationType(name_vn="Xuất sắc", name_en="Excellent"),
+            "G": GraduationType(name_vn="Giỏi", name_en="Very good"),
+            "KH": GraduationType(name_vn="Khá", name_en="Good"),
+            "TBK": GraduationType(name_vn="Trung bình khá", name_en="Average good"),
+            "TB": GraduationType(name_vn="Trung bình", name_en="Average")
         }
 
-    def get_mssv(self, class_of: int, program="CQ") -> str:
+    def get_mssv(self, class_of: int, program: Optional[str] = "CQ") -> str:
         """Create Student ID from a class (of year) and program.
 
         The format should be
@@ -70,7 +83,7 @@ class StudentFactory:
             - Xuong L. Tran <xuong@trhgquan.xyz>
         """
 
-        prefix = class_of.year % 100
+        prefix = class_of % 100
         program_code = self.program_type[program].get_code()
         generated = random.randint(0, 999)
 
@@ -110,7 +123,7 @@ class StudentFactory:
 
         return f"SOBANG/{random_id}"
 
-    def create_student(self) -> dict:
+    def create_student(self) -> Dict[str, str]:
         """Generate a fake student.
         Note that the return is a dict - which is automatically parse from response.json.
 
@@ -132,12 +145,12 @@ class StudentFactory:
 
         # Wrapping informations into a dict.
         student = {
-            "masv": self.get_mssv(khoa, mahe),
+            "masv": self.get_mssv(khoa.year, mahe),
             "ngaysinh": ngaysinh.strftime("%d/%m/%Y"),
             "hoten": hoten,
             "hotenAnh": hoten,
-            "bac": "DH",
-            "tenbac": "Dai hoc",
+            "Bac": "DH",
+            "tenbac": "Đại học",
             "tenbacAnh": "Bachelor of Science",
             "mahe": mahe,
             "tenhe": self.program_type[mahe].get_name_vn(),
