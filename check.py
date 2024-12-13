@@ -1,6 +1,6 @@
 """A CLI for those who don't want to use official HCMUS graduate information lookup website.
 
-Author:
+Author(s):
     - Me A. Doge <domyeukemphancam@trhgquan.xyz>
     - Quan H. Tran <quan@trhgquan.xyz>
     - Xuong L. Tran <xuong@trhgquan.xyz>
@@ -20,7 +20,7 @@ def handle_single_request(config: Dict[str, str], args: Dict[str, str]) -> None:
         config (Dict[str, str]): config dictionary - retrieved from json/yaml
         args (Dict[str, str]): args get from argparse
 
-    Author:
+    Author(s):
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
@@ -55,7 +55,7 @@ def handle_multiple_request(config: Dict[str, str], args: Dict[str, str]) -> Non
         config (Dict[str, str]): config dictionary - retrieved from json/yaml
         args (Dict[str, str]): args get from argparse
 
-    Author:
+    Author(s):
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
@@ -85,7 +85,7 @@ def handle_multiple_request(config: Dict[str, str], args: Dict[str, str]) -> Non
 def main():
     """Main function
 
-    Author:
+    Author(s):
         - Quan H. Tran <quan@trhgquan.xyz>
         - Me A. Doge <domyeukemphancam@trhgquan.xyz>
         - Xuong L. Tran <xuong@trhgquan.xyz>
