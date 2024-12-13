@@ -22,7 +22,7 @@ class HTTPException(Exception):
     # Response from the request
     response: Any
 
-    def __init__(self, message: Optional[str] = None, **kwargs):
+    def __init__(self, message: Optional[str] = None, **kwargs) -> None:
         """Class initialization
 
         Args:
