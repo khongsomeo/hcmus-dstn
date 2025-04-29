@@ -10,6 +10,16 @@ from typing import Dict, List, Tuple
 from pathlib import Path
 import yaml
 
+class color:
+    """Color class - for terminal color
+
+    Author(s):
+        - Xuong L. Tran <xuong@trhgquan.xyz>
+    """
+
+    OKGREEN = '\033[92m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
 
 def load_config(filename: str) -> Dict[str, str]:
     """Load config from supported config type (.json/.yaml)

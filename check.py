@@ -10,7 +10,7 @@ import csv
 from argparse import ArgumentParser
 from typing import Dict
 from src.dstn import DSTNSingleRequest, DSTNListRequest
-from src.utils import load_config, load_csv
+from src.utils import load_config, load_csv, color
 
 
 def handle_single_request(config: Dict[str, str], args: Dict[str, str]) -> None:
@@ -71,13 +71,18 @@ def handle_multiple_request(config: Dict[str, str], args: Dict[str, str]) -> Non
     # Print result to csv file.
     if args.output_file is None:
         for record in record_list:
-            print(" - ".join(record))
+            record_dict = record.asdict()
+            if record_dict["status"]:
+                print(f"{color.OKGREEN}\u2714 {record_dict['name']}/{record_dict['degree_id']} - VALID{color.ENDC}")
+                
+            else:
+                print(f"{color.FAIL}\u2718 {record_dict['name']}/{record_dict['degree_id']} - INVALID{color.ENDC}")
 
     else:
         with open(args.output_file, "w+", encoding="utf8") as output_handler:
-            output_writer = csv.writer(output_handler)
-            output_writer.writerow(["Name", "Degree ID", "Status"])
-            output_writer.writerows(record_list)
+            print("Name,Degree ID,Status", file=output_handler)
+            for record in record_list:
+                print(record, file=output_handler)
 
         print(f"Status has been written to {args.output_file}")
 

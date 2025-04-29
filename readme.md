@@ -72,13 +72,13 @@ Examples:
 
 ```bash
 # Python
-python check.py multiple --file check.csv
+python check.py [--output_file output.csv] multiple --file check.csv
 ```
 
 ```bash
 # This command check for degress in test.csv.
-# $(pwd)/test.csv - path to test.csv file
-docker run -v $(pwd)/test.csv:/hcmus-dstn/test.csv ghcr.io/khongsomeo/hcmus-dstn:latest multiple --file test.csv
+# Note that you must sync files in `pwd` using -w and -v flags.
+docker run -w `pwd` -v `pwd`:`pwd` ghcr.io/khongsomeo/hcmus-dstn:latest [--output_file output.csv] multiple --file test.csv
 ```
 
 ## Configurations
