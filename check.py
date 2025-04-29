@@ -6,11 +6,10 @@ Author(s):
     - Xuong L. Tran <xuong@trhgquan.xyz>
 """
 
-import csv
 from argparse import ArgumentParser
 from typing import Dict
 from src.dstn import DSTNSingleRequest, DSTNListRequest
-from src.utils import load_config, load_csv, color
+from src.utils import load_config, load_csv, FAIL, OKGREEN, ENDC
 
 
 def handle_single_request(config: Dict[str, str], args: Dict[str, str]) -> None:
@@ -73,10 +72,12 @@ def handle_multiple_request(config: Dict[str, str], args: Dict[str, str]) -> Non
         for record in record_list:
             record_dict = record.asdict()
             if record_dict["status"]:
-                print(f"{color.OKGREEN}\u2714 {record_dict['name']}/{record_dict['degree_id']} - VALID{color.ENDC}")
-                
+                print(f"{OKGREEN}\u2714 {record_dict['name']}/{record_dict['degree_id']}" \
+                    f" - VALID{ENDC}")
+
             else:
-                print(f"{color.FAIL}\u2718 {record_dict['name']}/{record_dict['degree_id']} - INVALID{color.ENDC}")
+                print(f"{FAIL}\u2718 {record_dict['name']}/{record_dict['degree_id']}" \
+                    f" - INVALID{ENDC}")
 
     else:
         with open(args.output_file, "w+", encoding="utf8") as output_handler:

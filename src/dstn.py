@@ -30,9 +30,9 @@ class DSTNListItem:
             - Xuong L. Tran <xuong@trhgquan.xyz>
         """
 
-        self.__name = kwargs.get("name", None);
-        self.__degree_id = kwargs.get("degree_id", None);
-        self.__status = kwargs.get("status", None);
+        self.__name = kwargs.get("name", None)
+        self.__degree_id = kwargs.get("degree_id", None)
+        self.__status = kwargs.get("status", None)
 
     def asdict(self) -> None:
         """Cast the given structure into a dictionary
@@ -55,7 +55,7 @@ class DSTNListItem:
         """
 
         return ",".join([self.__name, self.__degree_id, "VALID" if self.__status else "INVALID"])
-    
+
     def __iter__(self) -> str:
         """Yield the current structure
 
