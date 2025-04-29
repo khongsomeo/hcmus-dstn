@@ -16,6 +16,54 @@ from .exception import NotFoundException, HTTPException
 SINGLE_LOG = "error_single.html"
 MULTIPLE_LOG = "error_multiple.html"
 
+class DSTNListItem:
+    """Structure of an Item in DSTNList
+
+    Author(s):
+        - Xuong L. Tran <xuong@trhgquan.xyz>
+    """
+
+    def __init__(self, **kwargs) -> None:
+        """Initialization
+
+        Author(s):
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        self.__name = kwargs.get("name", None)
+        self.__degree_id = kwargs.get("degree_id", None)
+        self.__status = kwargs.get("status", None)
+
+    def asdict(self) -> None:
+        """Cast the given structure into a dictionary
+
+        Author(s):
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        return {
+            "name": self.__name,
+            "degree_id": self.__degree_id,
+            "status": self.__status
+        }
+
+    def __str__(self) -> str:
+        """Convert the structure into string
+
+        Author(s):
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        return ",".join([self.__name, self.__degree_id, "VALID" if self.__status else "INVALID"])
+
+    def __iter__(self) -> str:
+        """Yield the current structure
+
+        Author(s):
+            - Xuong L. Tran <xuong@trhgquan.xyz>
+        """
+
+        yield self.__str__()
 
 class DSTNItem:
     """Parse a JSON DSTN to beautified - table format.
@@ -324,7 +372,7 @@ class DSTNListRequest(DSTNRequest):
 
             # No records found
             except NotFoundException:
-                status_list.append((name, degree_id, "INVALID"))
+                status_list.append(DSTNListItem(name=name, degree_id=degree_id, status=False))
 
             # Error while playing with HTTP
             except HTTPException as http_error_handler:
@@ -336,6 +384,6 @@ class DSTNListRequest(DSTNRequest):
                     print(response.content, file=multiple_log_handler)
 
             else:
-                status_list.append((name, degree_id, "VALID"))
+                status_list.append(DSTNListItem(name=name, degree_id=degree_id, status=True))
 
         return status_list

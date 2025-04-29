@@ -1,16 +1,15 @@
 """A CLI for those who don't want to use official HCMUS graduate information lookup website.
 
-Author:
+Author(s):
     - Me A. Doge <domyeukemphancam@trhgquan.xyz>
     - Quan H. Tran <quan@trhgquan.xyz>
     - Xuong L. Tran <xuong@trhgquan.xyz>
 """
 
-import csv
 from argparse import ArgumentParser
 from typing import Dict
 from src.dstn import DSTNSingleRequest, DSTNListRequest
-from src.utils import load_config, load_csv
+from src.utils import load_config, load_csv, FAIL, OKGREEN, ENDC
 
 
 def handle_single_request(config: Dict[str, str], args: Dict[str, str]) -> None:
@@ -20,7 +19,7 @@ def handle_single_request(config: Dict[str, str], args: Dict[str, str]) -> None:
         config (Dict[str, str]): config dictionary - retrieved from json/yaml
         args (Dict[str, str]): args get from argparse
 
-    Author:
+    Author(s):
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
@@ -55,7 +54,7 @@ def handle_multiple_request(config: Dict[str, str], args: Dict[str, str]) -> Non
         config (Dict[str, str]): config dictionary - retrieved from json/yaml
         args (Dict[str, str]): args get from argparse
 
-    Author:
+    Author(s):
         - Xuong L. Tran <xuong@trhgquan.xyz>
     """
 
@@ -71,13 +70,20 @@ def handle_multiple_request(config: Dict[str, str], args: Dict[str, str]) -> Non
     # Print result to csv file.
     if args.output_file is None:
         for record in record_list:
-            print(" - ".join(record))
+            record_dict = record.asdict()
+            if record_dict["status"]:
+                print(f"{OKGREEN}\u2714 {record_dict['name']}/{record_dict['degree_id']}" \
+                    f" - VALID{ENDC}")
+
+            else:
+                print(f"{FAIL}\u2718 {record_dict['name']}/{record_dict['degree_id']}" \
+                    f" - INVALID{ENDC}")
 
     else:
         with open(args.output_file, "w+", encoding="utf8") as output_handler:
-            output_writer = csv.writer(output_handler)
-            output_writer.writerow(["Name", "Degree ID", "Status"])
-            output_writer.writerows(record_list)
+            print("Name,Degree ID,Status", file=output_handler)
+            for record in record_list:
+                print(record, file=output_handler)
 
         print(f"Status has been written to {args.output_file}")
 
@@ -85,7 +91,7 @@ def handle_multiple_request(config: Dict[str, str], args: Dict[str, str]) -> Non
 def main():
     """Main function
 
-    Author:
+    Author(s):
         - Quan H. Tran <quan@trhgquan.xyz>
         - Me A. Doge <domyeukemphancam@trhgquan.xyz>
         - Xuong L. Tran <xuong@trhgquan.xyz>
